@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a problem with the plugin or its installation flow.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please include enough detail for someone else to reproduce it.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem and the expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: List the exact steps someone else can follow.
+      placeholder: |
+        1. Install the plugin from ...
+        2. Start a new Codex session ...
+        3. Ask ...
+        4. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include Codex App or CLI, OS, and any other relevant context.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste any relevant output, screenshots, or error text.
+    validations:
+      required: false
