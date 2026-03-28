@@ -1,6 +1,6 @@
 {
   "name": "codex-explanatory-style",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Adds an explanatory output style to Codex using a SessionStart hook.",
   "author": {
     "name": "Sam Fung",
