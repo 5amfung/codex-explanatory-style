@@ -1,0 +1,30 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate plugin metadata JSON
+        run: python3 -m json.tool .codex-plugin/plugin.json >/dev/null
+
+      - name: Validate hook wiring JSON
+        run: python3 -m json.tool hooks.json >/dev/null
+
+      - name: Validate hook shell syntax
+        run: sh -n hooks/session-start
+
+      - name: Validate hook output contract
+        run: ./hooks/session-start | python3 -c 'import json,sys; payload=json.load(sys.stdin); output=payload["hookSpecificOutput"]; assert output["hookEventName"] == "SessionStart"; assert output["additionalContext"]'

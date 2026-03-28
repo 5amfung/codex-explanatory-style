@@ -48,14 +48,14 @@ Only do the local registration steps so the plugin appears in Codex's Plugins UI
 Do not install or enable it inside Codex.
 
 Tasks:
-1. Clone https://github.com/sfung/codex-explanatory-style into ~/.codex/plugins/codex-explanatory-style if it is not already present
+1. Clone https://github.com/5amfung/codex-explanatory-style into ~/.codex/plugins/codex-explanatory-style if it is not already present
 2. Create or update ~/.agents/plugins/marketplace.json
 3. Preserve any existing marketplace entries and unrelated plugins
 4. Ensure marketplace.json contains a local plugin entry for codex-explanatory-style pointing to ./.codex/plugins/codex-explanatory-style
 5. Verify that the cloned plugin contains .codex-plugin/plugin.json
 6. When finished, tell me to restart Codex and enable the plugin from Plugins in Codex App or from /plugins in Codex CLI
 
-If you need a reference, use https://raw.githubusercontent.com/sfung/codex-explanatory-style/main/README.md
+If you need a reference, use https://raw.githubusercontent.com/5amfung/codex-explanatory-style/main/README.md
 Do not delete, replace, or rewrite unrelated marketplace entries.
 ```
 
