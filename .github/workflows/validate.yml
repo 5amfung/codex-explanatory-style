@@ -23,6 +23,12 @@ jobs:
       - name: Validate hook wiring JSON
         run: python3 -m json.tool hooks.json >/dev/null
 
+      - name: Validate release-please config JSON
+        run: python3 -m json.tool release-please-config.json >/dev/null
+
+      - name: Validate release-please manifest JSON
+        run: python3 -m json.tool .release-please-manifest.json >/dev/null
+
       - name: Validate hook shell syntax
         run: sh -n hooks/session-start
 
