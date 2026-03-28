@@ -124,6 +124,14 @@ Adding the plugin to `marketplace.json` does not install it by itself. That file
 
 This plugin adds startup instructions and tends to produce slightly longer responses. Only install it if that tradeoff matches how you like Codex to work.
 
+## Releases
+
+This repository uses Google's `release-please` GitHub Action to manage release PRs, GitHub releases, and `CHANGELOG.md`.
+
+- Merges to `main` can trigger a release PR.
+- The release PR updates `CHANGELOG.md`, `.release-please-manifest.json`, and the version field in `.codex-plugin/plugin.json`.
+- Merge commit titles should follow Conventional Commits such as `fix: ...`, `feat: ...`, or `feat!: ...` because release versions are derived from those commit types.
+
 ## Implementation Notes
 
 - The plugin uses Codex's documented `SessionStart` hook.

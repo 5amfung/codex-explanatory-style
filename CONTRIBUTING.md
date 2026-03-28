@@ -30,6 +30,7 @@ sh -n hooks/session-start
 - Mention any tradeoffs or follow-up work.
 - Include docs updates in the same pull request when needed.
 - Keep PRs reviewable. If a change spans multiple concerns, split it up.
+- Use Conventional Commit style for the final merged commit title when possible, for example `fix: ...`, `feat: ...`, or `feat!: ...`, because releases are managed by `release-please`.
 
 ## Development notes
 
