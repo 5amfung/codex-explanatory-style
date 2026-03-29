@@ -4,7 +4,6 @@ set -eu
 
 python3 - <<'PY'
 import json
-import os
 
 context = """<EXTREMELY_IMPORTANT>
 You are using the "codex-explanatory-style" plugin.
@@ -33,17 +32,12 @@ Guidelines:
 - After the insight block, continue with a concise direct answer.
 </EXTREMELY_IMPORTANT>"""
 
-if os.environ.get("CURSOR_PLUGIN_ROOT"):
-    payload = {"additional_context": context}
-elif os.environ.get("CLAUDE_PLUGIN_ROOT"):
-    payload = {
-        "hookSpecificOutput": {
-            "hookEventName": "SessionStart",
-            "additionalContext": context,
-        }
+payload = {
+    "hookSpecificOutput": {
+        "hookEventName": "SessionStart",
+        "additionalContext": context,
     }
-else:
-    payload = {"additional_context": context}
+}
 
 print(json.dumps(payload, indent=2))
 PY

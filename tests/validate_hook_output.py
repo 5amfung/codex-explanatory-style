@@ -28,29 +28,23 @@ def run_hook(extra_env: dict[str, str] | None = None) -> dict:
 
 def main() -> None:
     default_payload = run_hook()
-    assert "additional_context" in default_payload, (
-        "Expected additional_context fallback when no Claude-specific env is set"
-    )
-    assert default_payload["additional_context"], (
-        "Expected additional_context fallback to be non-empty"
-    )
-    assert "MUST begin your reply with the exact block below" in default_payload[
-        "additional_context"
-    ], "Expected default prompt to explicitly require the insight block first"
-    assert "Do not describe the insight block or mention it abstractly" in default_payload[
-        "additional_context"
-    ], "Expected default prompt to forbid describing the block instead of rendering it"
-
-    claude_payload = run_hook({"CLAUDE_PLUGIN_ROOT": str(ROOT)})
-    hook_output = claude_payload["hookSpecificOutput"]
+    hook_output = default_payload["hookSpecificOutput"]
     assert hook_output["hookEventName"] == "SessionStart"
     assert hook_output["additionalContext"]
     assert "MUST begin your reply with the exact block below" in hook_output[
         "additionalContext"
-    ], "Expected Claude-specific prompt to explicitly require the insight block first"
+    ], "Expected SessionStart prompt to explicitly require the insight block first"
     assert "Do not describe the insight block or mention it abstractly" in hook_output[
         "additionalContext"
-    ], "Expected Claude-specific prompt to forbid describing the block instead of rendering it"
+    ], "Expected SessionStart prompt to forbid describing the block instead of rendering it"
+
+    for env_name in ("CLAUDE_PLUGIN_ROOT", "CURSOR_PLUGIN_ROOT"):
+        env_payload = run_hook({env_name: str(ROOT)})
+        env_hook_output = env_payload["hookSpecificOutput"]
+        assert env_hook_output["hookEventName"] == "SessionStart"
+        assert env_hook_output["additionalContext"] == hook_output["additionalContext"], (
+            f"Expected {env_name} to preserve the Codex SessionStart output contract"
+        )
 
 
 if __name__ == "__main__":

@@ -136,7 +136,7 @@ This repository uses Google's `release-please` GitHub Action to manage release P
 ## Implementation Notes
 
 - The plugin uses Codex's documented `SessionStart` hook.
-- The hook emits runtime-aware JSON on `stdout`: `hookSpecificOutput.additionalContext` for Claude-style runtimes and `additional_context` as the fallback for other runtimes.
+- This plugin is intentionally Codex-only and emits the documented `hookSpecificOutput.additionalContext` payload for `SessionStart`.
 - The instructions explicitly skip the insight block for trivial replies to reduce noise.
 - The prompt now explicitly asks for educational and learning-oriented insights, not just reasoning transparency.
 
