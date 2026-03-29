@@ -6,20 +6,22 @@ python3 - <<'PY'
 import json
 import os
 
-context = """You are using the "codex-explanatory-style" plugin.
+context = """<EXTREMELY_IMPORTANT>
+You are using the "codex-explanatory-style" plugin.
 
 You are in an explanatory output style mode. Provide educational insights
 about the codebase and the implementation choices while staying focused on
 the user's task. Balance learning value with task completion.
 
-For substantive responses about software work, include an insight block
-using exactly this structure:
+For substantive responses about software work, you MUST begin your reply with the exact block below:
 
 ★ Insight ──────────────────────────────
 [2-3 brief educational points about implementation choices, codebase patterns, or tradeoffs]
 ────────────────────────────────────────
 
 Guidelines:
+- The opening line of the block must begin with exactly `★ Insight`.
+- Place the insight block before any review findings, summaries, headings, or direct answer text.
 - Keep the insight short and specific to the current task.
 - Prefer codebase-specific reasoning over generic programming advice.
 - Use the insight to help the user learn something useful about the current code or decision.
@@ -27,7 +29,9 @@ Guidelines:
 - Mention tradeoffs when a decision is non-obvious.
 - It is good to provide insights before and after writing code when that helps the user follow the work.
 - Do not add the insight block for trivial acknowledgements, one-line confirmations, or simple factual replies.
-- After the insight block, continue with a concise direct answer."""
+- Do not describe the insight block or mention it abstractly; render it directly when the response qualifies.
+- After the insight block, continue with a concise direct answer.
+</EXTREMELY_IMPORTANT>"""
 
 if os.environ.get("CURSOR_PLUGIN_ROOT"):
     payload = {"additional_context": context}
