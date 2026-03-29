@@ -1,10 +1,10 @@
 # codex-explanatory-style
 
-A distributable Codex plugin that recreates a Claude-like explanatory output style through a `SessionStart` hook.
+A `SessionStart` hook for Codex that adds an explanatory output style to every session.
 
 ## What it does
 
-Once installed, the plugin injects additional developer context at session start and resume so Codex is nudged to include a short branded `★ Insight` block in substantive answers.
+Once installed, the hook injects additional developer context at session start and resume so Codex is nudged to include a short branded `★ Insight` block in substantive answers.
 
 The insight block is meant to explain:
 
@@ -13,7 +13,7 @@ The insight block is meant to explain:
 - tradeoffs and design decisions
 - educational takeaways that help the user learn from the work
 
-The plugin keeps the guidance narrow so Codex still answers directly and does not turn every reply into a lecture. The goal is collaborative teaching, not textbook narration.
+The hook keeps the guidance narrow so Codex still answers directly and does not turn every reply into a lecture. The goal is collaborative teaching, not textbook narration.
 
 ## Example
 
@@ -27,120 +27,116 @@ That also gives us a good place to encourage learning-oriented explanations
 about tradeoffs and codebase patterns without changing the code itself.
 ─────────────────────────────────────────────────
 
-Created the plugin manifest and wired the startup hook.
+Created the hook and wired it into the Codex config.
+```
+
+## Prerequisites
+
+Codex hooks are an experimental feature. Enable them by adding the following to your Codex configuration:
+
+```toml
+[features]
+codex_hooks = true
 ```
 
 ## Installation
 
-Codex installs plugins through marketplaces rather than by pointing directly at a repo root. In practice, there are two steps:
-
-1. Register the plugin locally so Codex can discover it in a marketplace.
-2. Install the plugin from that marketplace in Codex App or Codex CLI so Codex enables it for use.
+The hook is installed by copying two files into `~/.codex/`: the hook script and its wiring in `hooks.json`.
 
 ### Quick install
 
-If you want Codex to handle the local registration steps for you, paste the prompt below into Codex. This prepares the plugin so it appears in Codex's plugin directory. You still need to restart Codex and enable it afterward from Codex App or Codex CLI.
+Paste the prompt below into Codex and it will handle the installation for you.
 
 ```text
-Register the codex-explanatory-style plugin as a local Codex plugin.
-
-Only do the local registration steps so the plugin appears in Codex's Plugins UI.
-Do not install or enable it inside Codex.
+Install the codex-explanatory-style SessionStart hook.
 
 Tasks:
-1. Clone https://github.com/5amfung/codex-explanatory-style into ~/.codex/plugins/codex-explanatory-style if it is not already present
-2. Create or update ~/.agents/plugins/marketplace.json
-3. Preserve any existing marketplace entries and unrelated plugins
-4. Ensure marketplace.json contains a local plugin entry for codex-explanatory-style pointing to ./.codex/plugins/codex-explanatory-style
-5. Verify that the cloned plugin contains .codex-plugin/plugin.json
-6. When finished, tell me to restart Codex and enable the plugin from Plugins in Codex App or from /plugins in Codex CLI
+1. Clone https://github.com/5amfung/codex-explanatory-style into a temp directory
+2. Create ~/.codex/hooks/ if it does not exist
+3. Copy hooks/session-start from the cloned repo to ~/.codex/hooks/session-start
+4. Make ~/.codex/hooks/session-start executable (chmod +x)
+5. If ~/.codex/hooks.json already exists, merge the SessionStart entry from the repo's hooks.json into the existing file without removing other hooks
+6. If ~/.codex/hooks.json does not exist, copy the repo's hooks.json to ~/.codex/hooks.json
+7. Remove the temp clone
+8. Check that codex_hooks is enabled in the Codex config. If not, tell me how to enable it
+9. Tell me to start a new Codex session so the hook takes effect
 
-If you need a reference, use https://raw.githubusercontent.com/5amfung/codex-explanatory-style/main/README.md
-Do not delete, replace, or rewrite unrelated marketplace entries.
+Do not delete, replace, or rewrite any existing hooks in ~/.codex/hooks.json.
 ```
 
-### Configure a local marketplace
+### Manual install
 
-If you do not already have `~/.agents/plugins/marketplace.json`, create it with the example below.
+1. Clone or download this repository.
 
-If you already have that file, use this section as the reference for the plugin object you need to add to its top-level `plugins` array.
+2. Copy the hook script:
 
-Example `~/.agents/plugins/marketplace.json`:
+   ```bash
+   mkdir -p ~/.codex/hooks
+   cp hooks/session-start ~/.codex/hooks/session-start
+   chmod +x ~/.codex/hooks/session-start
+   ```
 
-```json
-{
-  "name": "local-plugins",
-  "interface": {
-    "displayName": "Local Plugins"
-  },
-  "plugins": [
-    {
-      "name": "codex-explanatory-style",
-      "source": {
-        "source": "local",
-        "path": "./.codex/plugins/codex-explanatory-style"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Coding"
-    }
-  ]
-}
-```
+3. Add the hook wiring to `~/.codex/hooks.json`. If the file does not exist, copy it directly:
 
-The `source.path` is resolved relative to your home directory for a personal local marketplace, so `./.codex/plugins/codex-explanatory-style` points at `~/.codex/plugins/codex-explanatory-style`.
+   ```bash
+   cp hooks.json ~/.codex/hooks.json
+   ```
 
-Adding the plugin to `marketplace.json` does not install it by itself. That file only makes the plugin appear in Codex's plugin directory. You still need the install step in Codex so the plugin is actually installed and enabled.
+   If `~/.codex/hooks.json` already exists, merge the `SessionStart` entry from this repo's `hooks.json` into your existing file. The hook entry to add:
 
-### Install in Codex App
+   ```json
+   {
+     "matcher": "startup|resume",
+     "hooks": [
+       {
+         "type": "command",
+         "command": "~/.codex/hooks/session-start",
+         "statusMessage": "Loading explanatory style"
+       }
+     ]
+   }
+   ```
 
-1. Restart Codex after creating or updating the marketplace file.
-2. Open `Plugins`.
-3. Open the `Local Plugins` marketplace, or whatever `interface.displayName` you used in `marketplace.json`.
-4. Select `codex-explanatory-style`.
-5. Install or enable the plugin.
-6. Start a new thread. This plugin uses a `SessionStart` hook, so the behavior is applied on new or resumed sessions.
+   This object goes inside the `hooks.SessionStart` array in your `hooks.json`.
 
-### Install in Codex CLI
+4. Start a new Codex session. The hook fires on session start and resume.
 
-1. Restart your Codex CLI session after creating or updating the marketplace file.
-2. Run `codex`.
-3. Open the plugin directory with `/plugins`.
-4. Open the `Local Plugins` marketplace, or whatever `interface.displayName` you used in `marketplace.json`.
-5. Select `codex-explanatory-style`.
-6. Install or enable the plugin.
-7. Start a new thread so the `SessionStart` hook can apply.
+### Uninstall
+
+1. Remove the `SessionStart` entry for `session-start` from `~/.codex/hooks.json`. If it is the only hook, you can delete the file entirely.
+2. Delete the hook script:
+
+   ```bash
+   rm ~/.codex/hooks/session-start
+   ```
 
 ### Troubleshooting
 
-- If the plugin does not appear, make sure you copied the entire repository directory, including `.codex-plugin/plugin.json`, `hooks.json`, and `hooks/session-start`.
-- If the marketplace loads but the plugin is missing, check that `marketplace.json` is valid JSON and that the plugin entry is inside the top-level `plugins` array.
-- If Codex cannot resolve the local path, confirm that `./.codex/plugins/codex-explanatory-style` exists under your home directory.
-- The official build-plugin docs also describe repo-local marketplaces if you want to test the plugin from another repository instead of copying it into `~/.codex/plugins`.
+- If the insight block does not appear, confirm that `codex_hooks = true` is set in your Codex configuration.
+- If the hook does not fire, check that `~/.codex/hooks/session-start` exists and is executable (`chmod +x`).
+- If you see a JSON parse error, validate your `~/.codex/hooks.json` with `python3 -m json.tool ~/.codex/hooks.json`.
+- The hook only fires on new or resumed sessions. It will not apply mid-session.
 
 ## Token cost
 
-This plugin adds startup instructions and tends to produce slightly longer responses. Only install it if that tradeoff matches how you like Codex to work.
+This hook adds startup instructions and tends to produce slightly longer responses. Only install it if that tradeoff matches how you like Codex to work.
 
 ## Releases
 
 This repository uses Google's `release-please` GitHub Action to manage release PRs, GitHub releases, and `CHANGELOG.md`.
 
 - Merges to `main` can trigger a release PR.
-- The release PR updates `CHANGELOG.md`, `.release-please-manifest.json`, and the version field in `.codex-plugin/plugin.json`.
+- The release PR updates `CHANGELOG.md` and `.release-please-manifest.json`.
 - Merge commit titles should follow Conventional Commits such as `fix: ...`, `feat: ...`, or `feat!: ...` because release versions are derived from those commit types.
 
 ## Implementation Notes
 
-- The plugin uses Codex's documented `SessionStart` hook.
+- The hook uses Codex's documented `SessionStart` event.
 - The hook emits `hookSpecificOutput.additionalContext` as JSON on `stdout`.
 - The instructions explicitly skip the insight block for trivial replies to reduce noise.
-- The prompt now explicitly asks for educational and learning-oriented insights, not just reasoning transparency.
+- The prompt explicitly asks for educational and learning-oriented insights, not just reasoning transparency.
 
 ## References
 
 - [Codex hooks](https://developers.openai.com/codex/hooks)
-- [Build plugins for Codex](https://developers.openai.com/codex/plugins/build)
 - [Claude explanatory output style plugin](https://github.com/anthropics/claude-code/tree/main/plugins/explanatory-output-style)

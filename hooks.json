@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./hooks/session-start",
+            "command": "~/.codex/hooks/session-start",
             "statusMessage": "Loading explanatory style"
           }
         ]
