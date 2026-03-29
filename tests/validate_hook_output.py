@@ -31,12 +31,15 @@ def main() -> None:
     hook_output = default_payload["hookSpecificOutput"]
     assert hook_output["hookEventName"] == "SessionStart"
     assert hook_output["additionalContext"]
-    assert "MUST begin your reply with the exact block below" in hook_output[
+    assert "begin your reply with an insight block in this format" in hook_output[
         "additionalContext"
-    ], "Expected SessionStart prompt to explicitly require the insight block first"
-    assert "Do not describe the insight block or mention it abstractly" in hook_output[
+    ], "Expected SessionStart prompt to describe the insight block as a format, not a literal block"
+    assert "Replace the placeholder line with 2-3 brief educational points" in hook_output[
         "additionalContext"
-    ], "Expected SessionStart prompt to forbid describing the block instead of rendering it"
+    ], "Expected SessionStart prompt to explain how to replace the placeholder line"
+    assert "Do not say that you'll include an insight block later" in hook_output[
+        "additionalContext"
+    ], "Expected SessionStart prompt to forbid promising the block instead of rendering it"
 
     for env_name in ("CLAUDE_PLUGIN_ROOT", "CURSOR_PLUGIN_ROOT"):
         env_payload = run_hook({env_name: str(ROOT)})

@@ -138,6 +138,7 @@ This repository uses Google's `release-please` GitHub Action to manage release P
 - The plugin uses Codex's documented `SessionStart` hook.
 - This plugin is intentionally Codex-only and emits the documented `hookSpecificOutput.additionalContext` payload for `SessionStart`.
 - The instructions explicitly skip the insight block for trivial replies to reduce noise.
+- The manifest intentionally omits `interface.defaultPrompt` so enabling the plugin does not seed a starter conversation with a synthetic user prompt.
 - The prompt now explicitly asks for educational and learning-oriented insights, not just reasoning transparency.
 
 ## Verification Notes

@@ -21,6 +21,7 @@ Thanks for helping improve `codex-explanatory-style`.
 python3 -m json.tool .codex-plugin/plugin.json >/dev/null
 python3 -m json.tool hooks.json >/dev/null
 sh -n hooks/session-start
+python3 tests/validate_plugin_manifest.py
 python3 tests/validate_hook_output.py
 ```
 
