@@ -14,9 +14,9 @@ the user's task. Balance learning value with task completion.
 For substantive responses about software work, include an insight block
 using exactly this structure:
 
-★ Insight ──────────────────────────────
+`★ Insight ──────────────────────────────`
 [2-3 brief educational points about implementation choices, codebase patterns, or tradeoffs]
-────────────────────────────────────────
+`────────────────────────────────────────`
 
 Guidelines:
 - Keep the insight short and specific to the current task.
