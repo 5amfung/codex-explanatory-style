@@ -118,6 +118,7 @@ Adding the plugin to `marketplace.json` does not install it by itself. That file
 - If the plugin does not appear, make sure you copied the entire repository directory, including `.codex-plugin/plugin.json`, `hooks.json`, and `hooks/session-start`.
 - If the marketplace loads but the plugin is missing, check that `marketplace.json` is valid JSON and that the plugin entry is inside the top-level `plugins` array.
 - If Codex cannot resolve the local path, confirm that `./.codex/plugins/codex-explanatory-style` exists under your home directory.
+- Verify the plugin in a new interactive Codex App or Codex CLI session. In local testing on March 28, 2026 with `codex-cli 0.117.0`, `codex exec` did not run the `SessionStart` hook command, so it was not a reliable end-to-end smoke test for this plugin.
 - The official build-plugin docs also describe repo-local marketplaces if you want to test the plugin from another repository instead of copying it into `~/.codex/plugins`.
 
 ## Token cost
@@ -135,9 +136,15 @@ This repository uses Google's `release-please` GitHub Action to manage release P
 ## Implementation Notes
 
 - The plugin uses Codex's documented `SessionStart` hook.
-- The hook emits `hookSpecificOutput.additionalContext` as JSON on `stdout`.
+- The hook emits runtime-aware JSON on `stdout`: `hookSpecificOutput.additionalContext` for Claude-style runtimes and `additional_context` as the fallback for other runtimes.
 - The instructions explicitly skip the insight block for trivial replies to reduce noise.
 - The prompt now explicitly asks for educational and learning-oriented insights, not just reasoning transparency.
+
+## Verification Notes
+
+- The local JSON and shell validation commands in this repo verify the plugin manifest, hook wiring, and hook output contract.
+- Those checks do not prove that Codex is actively applying the injected context in a live session.
+- For a true smoke test, install or enable the plugin, start a new interactive Codex App or Codex CLI session, and then ask a substantive software question that should trigger the `★ Insight` block.
 
 ## References
 

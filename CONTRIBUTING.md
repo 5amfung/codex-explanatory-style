@@ -21,8 +21,12 @@ Thanks for helping improve `codex-explanatory-style`.
 python3 -m json.tool .codex-plugin/plugin.json >/dev/null
 python3 -m json.tool hooks.json >/dev/null
 sh -n hooks/session-start
-./hooks/session-start | python3 -c 'import json,sys; data=json.load(sys.stdin); assert data["hookSpecificOutput"]["hookEventName"] == "SessionStart"; assert data["hookSpecificOutput"]["additionalContext"]'
+python3 tests/validate_hook_output.py
 ```
+
+Those commands validate the plugin files and hook payload, but they are not a full end-to-end behavior test.
+
+For an end-to-end smoke test, install or enable the plugin, start a new interactive Codex App or Codex CLI session, and ask a substantive software question that should trigger the `★ Insight` block. In local testing on March 28, 2026 with `codex-cli 0.117.0`, `codex exec` did not run the `SessionStart` hook command, so it was not a reliable smoke test for this plugin.
 
 ## Pull request guidelines
 

@@ -36,4 +36,4 @@ jobs:
         run: sh -n hooks/session-start
 
       - name: Validate hook output contract
-        run: ./hooks/session-start | python3 -c 'import json,sys; payload=json.load(sys.stdin); output=payload["hookSpecificOutput"]; assert output["hookEventName"] == "SessionStart"; assert output["additionalContext"]'
+        run: python3 tests/validate_hook_output.py
