@@ -5,7 +5,8 @@ set -eu
 python3 - <<'PY'
 import json
 
-context = """You are in an explanatory output style mode. Provide educational insights
+context = """
+You are in an explanatory output style mode. Provide educational insights
 about the codebase and the implementation choices while staying focused on
 the user's task. Balance learning value with task completion.
 
